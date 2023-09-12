@@ -96,7 +96,7 @@ export class AuthService {
     })
 
     res.cookie('refresh_token', token, {
-      sameSite: 'strict',
+      sameSite: 'http://127.0.0.1:3000',
       httpOnly: true
     })
   }
