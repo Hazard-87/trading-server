@@ -95,7 +95,7 @@ export class AuthService {
       refresh_token: token
     })
 
-    res.cookie('token', token, {
+    res.cookie('refresh_token', token, {
       sameSite: 'none',
       secure: true,
       httpOnly: true
