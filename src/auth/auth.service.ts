@@ -25,7 +25,9 @@ export class AuthService {
     const payload = { userId: user.id, username: user.email }
     await this.setCookie(res, payload, user.id)
     return {
-      access_token: await this.jwtService.signAsync(payload)
+      result: {
+        access_token: await this.jwtService.signAsync(payload)
+      }
     }
   }
 
@@ -66,7 +68,9 @@ export class AuthService {
     const payload = { userId: user.id, username: user.email }
     await this.setCookie(res, payload, user.id)
     return {
-      access_token: await this.jwtService.signAsync(payload)
+      result: {
+        access_token: await this.jwtService.signAsync(payload)
+      }
     }
   }
 
@@ -91,7 +95,7 @@ export class AuthService {
       refresh_token: token
     })
 
-    res.cookie('refreshToken', token, {
+    res.cookie('refresh_token', token, {
       sameSite: 'strict',
       httpOnly: true
     })
