@@ -51,7 +51,7 @@ export class OrdersController {
     return this.ordersService.update(+id, dto)
   }
 
-  @Patch(':id/closeOrder')
+  @Patch(':id/close')
   closeOrder(@Param('id') id: string, @Body() dto: CloseOrderDto) {
     return this.ordersService.close(+id, dto)
   }

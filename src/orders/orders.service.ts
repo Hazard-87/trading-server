@@ -18,7 +18,12 @@ export class OrdersService {
 
   async create(dto: CreateOrderDto, user: UserEntity) {
     const images = dto.images ? await this.imagesService.findImagesByIds(dto.images) : []
-    const result = await this.repository.save({ ...dto, user, images })
+    const result = await this.repository.save({
+      ...dto,
+      user,
+      currentStopLoss: dto.stopLoss,
+      images
+    })
     return await this.findOne(result.id)
   }
 

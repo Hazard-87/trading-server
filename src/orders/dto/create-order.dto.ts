@@ -35,10 +35,6 @@ export class CreateOrderDto {
   buyDate: Date
 
   @ApiProperty()
-  @Column()
-  currentStopLoss: number
-
-  @ApiProperty()
   @Column({ nullable: true })
   sellPrice: number
 
