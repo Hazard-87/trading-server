@@ -32,7 +32,7 @@ export class AuthService {
   }
 
   async refresh(req: any, res: any): Promise<any> {
-    const token = req.cookies['refreshToken']
+    const token = req.cookies['refresh_token']
     const decode = this.jwtService.decode(token) as any
     const currentTime = Date.now() / 1000
     if (decode.exp - currentTime < 0) {

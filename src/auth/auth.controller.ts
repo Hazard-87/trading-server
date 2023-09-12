@@ -46,19 +46,19 @@ export class AuthController {
 
   @Get('profile')
   getProfile(@Req() req) {
-    const token = req.cookies['refreshToken']
+    const token = req.cookies['refresh_token']
     return this.userService.findOneByToken(token)
   }
 
   @Patch('profile')
   updateProfile(@Request() req, @Body() dto: UpdateUserDto) {
-    const token = req.cookies['refreshToken']
+    const token = req.cookies['refresh_token']
     return this.authService.update(token, dto)
   }
 
   @Delete('profile')
   removeProfile(@Request() req) {
-    const token = req.cookies['refreshToken']
+    const token = req.cookies['refresh_token']
     return this.userService.remove(token)
   }
 }

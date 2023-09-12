@@ -27,7 +27,7 @@ export class OrdersController {
   @HttpCode(HttpStatus.OK)
   @Post()
   async create(@Req() req, @Body() dto: CreateOrderDto) {
-    const token = req.cookies['refreshToken']
+    const token = req.cookies['refresh_token']
     const user = await this.usersService.findOneByToken(token)
     return this.ordersService.create(dto, user)
   }
@@ -37,7 +37,7 @@ export class OrdersController {
   })
   @Get()
   async findByParams(@Req() req, @Query() query?: QueryArg) {
-    const token = req.cookies['refreshToken']
+    const token = req.cookies['refresh_token']
     const user = await this.usersService.findOneByToken(token)
     if (query.id) {
       return this.ordersService.findOne(query.id)
