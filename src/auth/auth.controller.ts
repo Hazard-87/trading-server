@@ -25,7 +25,7 @@ export class AuthController {
   constructor(private authService: AuthService, private userService: UsersService) {}
 
   @Public()
-  @Post('register')
+  @Post('registration')
   createProfile(@Request() req, @Body() dto: CreateUserDto, @Res({ passthrough: true }) res) {
     return this.authService.signOut(dto, res)
   }
