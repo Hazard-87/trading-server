@@ -50,6 +50,22 @@ export class AuthService {
     }
   }
 
+  async checkAuth(req: any): Promise<any> {
+    const refresh_token = req.cookies['refresh_token']
+    const access_token = req.cookies['access_token']
+    const decode = this.jwtService.decode(refresh_token) as any
+    const currentTime = Date.now() / 1000
+    const user = await this.repository.findOneByToken(refresh_token)
+
+    if (!access_token || decode.exp - currentTime < 0 || !user) {
+      throw new UnauthorizedException('Невалидная сессия')
+    }
+
+    return {
+      data: 'OK'
+    }
+  }
+
   async signOut(dto: CreateUserDto, res: any): Promise<any> {
     if (!dto.email) {
       throw new NotFoundException(`Поле email обязательное`)

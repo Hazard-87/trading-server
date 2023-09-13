@@ -9,7 +9,8 @@ import {
   Post,
   Req,
   Request,
-  Res
+  Res,
+  UnauthorizedException
 } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { Public } from '../decorators/public.decorator'
@@ -18,6 +19,7 @@ import { UsersService } from '../users/users.service'
 import { UpdateUserDto } from '../users/dto/update-user.dto'
 import { LoginDto } from './dto/login.dto'
 import { CreateUserDto } from '../users/dto/create-user.dto'
+import { log } from 'console'
 
 @Controller('auth')
 @ApiTags('auth')
@@ -44,10 +46,23 @@ export class AuthController {
     return this.authService.refresh(req, res)
   }
 
+  @HttpCode(HttpStatus.OK)
+  @Public()
+  @Get('checkAuth')
+  checkAuth(@Req() req) {
+    return this.authService.checkAuth(req)
+  }
+
   @Get('profile')
+  @Public()
   getProfile(@Req() req) {
     const token = req.cookies['refresh_token']
-    return this.userService.findOneByToken(token)
+    const user = this.userService.findOneByToken(token)
+    if (!user) {
+      throw new UnauthorizedException('Невалидная сессия')
+    }
+
+    return user
   }
 
   @Patch('profile')
