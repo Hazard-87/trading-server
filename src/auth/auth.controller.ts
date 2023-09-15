@@ -53,12 +53,7 @@ export class AuthController {
 
   @Get('profile')
   getProfile(@Req() req) {
-    const token = req.cookies['refresh_token']
-    if (!token) {
-      throw new UnauthorizedException('Невалидная сессия')
-    }
-    
-    const user = this.userService.findOneByToken(token)
+    const user = this.userService.findOneById(req.user.userId)
     if (!user) {
       throw new UnauthorizedException('Невалидная сессия')
     }
@@ -68,13 +63,11 @@ export class AuthController {
 
   @Patch('profile')
   updateProfile(@Request() req, @Body() dto: UpdateUserDto) {
-    const token = req.cookies['refresh_token']
-    return this.authService.update(token, dto)
+    return this.authService.update(req.user.userId, dto)
   }
 
   @Delete('profile')
   removeProfile(@Request() req) {
-    const token = req.cookies['refresh_token']
-    return this.userService.remove(token)
+    return this.userService.remove(req.user.userId)
   }
 }

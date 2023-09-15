@@ -38,7 +38,7 @@ export class AuthService {
     if (decode.exp - currentTime < 0) {
       throw new UnauthorizedException('Невалидная сессия')
     }
-    const user = await this.repository.findOneByToken(token)
+    const user = await this.repository.findOneByRefreshToken(token)
     if (!user) {
       throw new UnauthorizedException('Невалидная сессия')
     }
@@ -55,7 +55,7 @@ export class AuthService {
     const access_token = req.cookies['access_token']
     const decode = this.jwtService.decode(refresh_token) as any
     const currentTime = Date.now() / 1000
-    const user = await this.repository.findOneByToken(refresh_token)
+    const user = await this.repository.findOneByRefreshToken(refresh_token)
 
     if (!access_token || decode.exp - currentTime < 0 || !user) {
       throw new UnauthorizedException('Невалидная сессия')
@@ -90,8 +90,8 @@ export class AuthService {
     }
   }
 
-  async update(token: string, dto: UpdateUserDto) {
-    const user = await this.repository.findOneByToken(token)
+  async update(userId: number, dto: UpdateUserDto) {
+    const user = await this.repository.findOneById(userId)
     if (!user) {
       throw new UnauthorizedException('Невалидная сессия')
     }

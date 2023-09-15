@@ -1,5 +1,6 @@
 import { Repository } from 'typeorm'
 import { Injectable, NotFoundException } from '@nestjs/common'
+import { JwtService } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
@@ -10,7 +11,8 @@ import { RefreshDto } from '../auth/dto/refresh.dto'
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
-    private repository: Repository<UserEntity>
+    private repository: Repository<UserEntity>,
+    private jwtService: JwtService
   ) {}
 
   create(dto: CreateUserDto) {
@@ -27,7 +29,7 @@ export class UsersService {
     return await this.repository.findOneById(id)
   }
 
-  async findOneByToken(token: string): Promise<UserEntity | undefined> {
+  async findOneByRefreshToken(token: string): Promise<UserEntity | undefined> {
     const user = await this.repository.findOneBy({
       refresh_token: token
     })
@@ -46,8 +48,8 @@ export class UsersService {
     return this.repository.update(id, dto)
   }
 
-  async remove(token: string) {
-    const user = await this.findOneByToken(token)
+  async remove(userId: number) {
+    const user = await this.findOneById(userId)
     if (!user) {
       throw new NotFoundException('Такой пользователь не найден')
     }
