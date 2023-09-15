@@ -19,7 +19,6 @@ import { UsersService } from '../users/users.service'
 import { UpdateUserDto } from '../users/dto/update-user.dto'
 import { LoginDto } from './dto/login.dto'
 import { CreateUserDto } from '../users/dto/create-user.dto'
-import { log } from 'console'
 
 @Controller('auth')
 @ApiTags('auth')
@@ -40,7 +39,6 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Public()
   @Get('refresh')
   refresh(@Req() req, @Res({ passthrough: true }) res) {
     return this.authService.refresh(req, res)
@@ -54,9 +52,12 @@ export class AuthController {
   }
 
   @Get('profile')
-  @Public()
   getProfile(@Req() req) {
     const token = req.cookies['refresh_token']
+    if (!token) {
+      throw new UnauthorizedException('Невалидная сессия')
+    }
+    
     const user = this.userService.findOneByToken(token)
     if (!user) {
       throw new UnauthorizedException('Невалидная сессия')
