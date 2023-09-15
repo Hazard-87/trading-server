@@ -22,7 +22,7 @@ export class AuthService {
       throw new UnauthorizedException('Неверный email или пароль')
     }
 
-    const payload = { userId: user.id, username: user.email }
+    const payload = { userId: user.id, email: user.email }
     await this.setCookie(res, payload, user.id)
     return {
       result: {
@@ -43,7 +43,7 @@ export class AuthService {
       throw new UnauthorizedException('Невалидная сессия')
     }
 
-    const payload = { userId: user.id, username: user.email }
+    const payload = { userId: user.id, email: user.email }
     await this.setCookie(res, payload, user.id)
     return {
       access_token: await this.jwtService.signAsync(payload)
@@ -81,7 +81,7 @@ export class AuthService {
 
     const hashPassword = await bcrypt.hash(dto.password, this.saltOrRounds)
     const user = await this.repository.create({ ...dto, password: hashPassword })
-    const payload = { userId: user.id, username: user.email }
+    const payload = { userId: user.id, email: user.email }
     await this.setCookie(res, payload, user.id)
     return {
       result: {
