@@ -52,12 +52,11 @@ export class AuthService {
 
   async checkAuth(req: any): Promise<any> {
     const refresh_token = req.cookies['refresh_token']
-    const access_token = req.cookies['access_token']
     const decode = this.jwtService.decode(refresh_token) as any
     const currentTime = Date.now() / 1000
     const user = await this.repository.findOneByRefreshToken(refresh_token)
 
-    if (!access_token || decode.exp - currentTime < 0 || !user) {
+    if (decode.exp - currentTime < 0 || !user) {
       throw new UnauthorizedException('Невалидная сессия')
     }
 
@@ -105,7 +104,7 @@ export class AuthService {
 
   async setCookie(res: any, payload: any, userId: number) {
     const token = await this.jwtService.signAsync(payload, {
-      expiresIn: '600s'
+      expiresIn: '1296000s'
     })
     await this.repository.updateRT(userId, {
       refresh_token: token
