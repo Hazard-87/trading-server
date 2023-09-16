@@ -38,6 +38,7 @@ export class AuthController {
     return this.authService.signIn(dto.email, dto.password, res)
   }
 
+  @Public()
   @HttpCode(HttpStatus.OK)
   @Get('refresh')
   refresh(@Req() req, @Res({ passthrough: true }) res) {
