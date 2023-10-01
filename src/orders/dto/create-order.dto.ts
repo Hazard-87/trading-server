@@ -11,11 +11,11 @@ export class CreateOrderDto {
   direction: 'long' | 'short'
 
   @ApiProperty()
-  @Column()
+  @Column('decimal', { precision: 6, scale: 2 })
   takeProfit: number
 
   @ApiProperty()
-  @Column()
+  @Column('decimal', { precision: 6, scale: 2 })
   stopLoss: number
 
   @ApiProperty()
@@ -23,8 +23,8 @@ export class CreateOrderDto {
   lot: number
 
   @ApiProperty()
-  @Column()
-  buyPrice: number
+  @Column('decimal', { precision: 6, scale: 2 })
+  openPrice: number
 
   @ApiProperty()
   @Column()
@@ -32,15 +32,15 @@ export class CreateOrderDto {
 
   @ApiProperty()
   @Column()
-  buyDate: Date
+  openDate: Date
+
+  @ApiProperty()
+  @Column('decimal', { precision: 6, scale: 2, nullable: true })
+  closePrice: number
 
   @ApiProperty()
   @Column({ nullable: true })
-  sellPrice: number
-
-  @ApiProperty()
-  @Column({ nullable: true })
-  sellDate: Date
+  closeDate: Date
 
   @ApiProperty()
   @Column({ nullable: true })

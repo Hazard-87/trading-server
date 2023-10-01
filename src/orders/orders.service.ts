@@ -21,6 +21,7 @@ export class OrdersService {
     const result = await this.repository.save({
       ...dto,
       user,
+      status: dto.closePrice ? 'CLOSED' : 'OPENED',
       currentStopLoss: dto.stopLoss,
       images
     })
@@ -99,7 +100,7 @@ export class OrdersService {
     const images = (await this.findOne(id)).images.map((item) => item.id)
     const items = await this.imagesService.findImagesByIds(dto.images || images)
 
-    await this.repository.update(id, { ...dto, images: items })
+    await this.repository.update(id, { ...dto, status: 'CLOSED', images: items })
     return this.findOne(id)
   }
 

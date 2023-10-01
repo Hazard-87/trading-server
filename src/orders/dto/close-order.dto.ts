@@ -3,12 +3,12 @@ import { Column } from 'typeorm'
 
 export class CloseOrderDto {
   @ApiProperty()
-  @Column()
-  sellPrice: number
+  @Column('decimal', { precision: 6, scale: 2 })
+  closePrice: number
 
   @ApiProperty()
   @Column()
-  sellDate: Date
+  closeDate: Date
 
   @ApiProperty()
   @Column({ nullable: true })

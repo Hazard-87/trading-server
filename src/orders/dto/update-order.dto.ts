@@ -3,7 +3,7 @@ import { Column } from 'typeorm'
 
 export class UpdateOrderDto {
   @ApiProperty()
-  @Column()
+  @Column('decimal', { precision: 6, scale: 2 })
   currentStopLoss: number
 
   @ApiProperty()

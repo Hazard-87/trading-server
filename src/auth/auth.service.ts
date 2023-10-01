@@ -33,6 +33,10 @@ export class AuthService {
 
   async refresh(req: any, res: any): Promise<any> {
     const token = req.cookies['refresh_token']
+    if (!token) {
+      throw new UnauthorizedException('Невалидная сессия')
+    }
+
     const decode = this.jwtService.decode(token) as any
     const currentTime = Date.now() / 1000
     if (decode.exp - currentTime < 0) {
@@ -52,6 +56,11 @@ export class AuthService {
 
   async checkAuth(req: any): Promise<any> {
     const refresh_token = req.cookies['refresh_token']
+
+    if (!refresh_token) {
+      throw new UnauthorizedException('Невалидная сессия')
+    }
+
     const decode = this.jwtService.decode(refresh_token) as any
     const currentTime = Date.now() / 1000
     const user = await this.repository.findOneByRefreshToken(refresh_token)
