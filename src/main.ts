@@ -9,7 +9,12 @@ async function bootstrap() {
   app.setGlobalPrefix('/api')
 
   app.enableCors({
-    origin: ['http://127.0.0.1:3000', 'http://localhost:3000', '*'],
+    origin: [
+      'http://127.0.0.1:3000',
+      'http://localhost:3000',
+      'https://trading-history-book.vercel.app',
+      '*'
+    ],
     allowedHeaders: ['Accept', 'Content-Type', 'Authorization'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     preflightContinue: false,
