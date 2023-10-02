@@ -9,11 +9,13 @@ import { UsersService } from '../users/users.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UserEntity } from '../users/entities/user.entity'
 import { AuthGuard } from '../guards/auth.guard'
+import { DepositsService } from '../deposits/deposits.service'
+import { DepositEntity } from '../deposits/entities/deposit.entity'
 
 @Module({
   imports: [
     UsersModule,
-    TypeOrmModule.forFeature([UserEntity]),
+    TypeOrmModule.forFeature([UserEntity, DepositEntity]),
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
@@ -24,6 +26,7 @@ import { AuthGuard } from '../guards/auth.guard'
   providers: [
     AuthService,
     UsersService,
+    DepositsService,
     {
       provide: APP_GUARD,
       useClass: AuthGuard

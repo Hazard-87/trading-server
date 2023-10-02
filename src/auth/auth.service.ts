@@ -4,10 +4,15 @@ import * as bcrypt from 'bcrypt'
 import { UsersService } from '../users/users.service'
 import { CreateUserDto } from '../users/dto/create-user.dto'
 import { UpdateUserDto } from '../users/dto/update-user.dto'
+import { DepositsService } from '../deposits/deposits.service'
 
 @Injectable()
 export class AuthService {
-  constructor(private repository: UsersService, private jwtService: JwtService) {}
+  constructor(
+    private repository: UsersService,
+    private jwtService: JwtService,
+    private depositsService: DepositsService
+  ) {}
 
   saltOrRounds = 10
 
@@ -89,6 +94,13 @@ export class AuthService {
 
     const hashPassword = await bcrypt.hash(dto.password, this.saltOrRounds)
     const user = await this.repository.create({ ...dto, password: hashPassword })
+
+    const data = {
+      date: new Date(),
+      count: null
+    }
+    await this.depositsService.create(data, user)
+
     const payload = { userId: user.id, email: user.email }
     await this.setCookie(res, payload, user.id)
     return {

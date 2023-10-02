@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { ApiProperty } from '@nestjs/swagger'
 import { OrderEntity } from '../../orders/entities/order.entity'
+import { DepositEntity } from '../../deposits/entities/deposit.entity'
 
 @Entity('users')
 export class UserEntity {
@@ -33,4 +34,8 @@ export class UserEntity {
   @ApiProperty({ type: [OrderEntity] })
   @OneToMany(() => OrderEntity, (order) => order.user)
   orders: OrderEntity[]
+
+  @ApiProperty({ type: [DepositEntity] })
+  @OneToMany(() => DepositEntity, (deposit) => deposit.user)
+  deposits: DepositEntity[]
 }

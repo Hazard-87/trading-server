@@ -7,10 +7,12 @@ import { ImagesService } from '../images/images.service'
 import { ImageEntity } from '../images/entities/image.entity'
 import { UsersService } from '../users/users.service'
 import { UserEntity } from '../users/entities/user.entity'
+import { DepositsService } from '../deposits/deposits.service'
+import { DepositEntity } from '../deposits/entities/deposit.entity'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([OrderEntity, ImageEntity, UserEntity])],
+  imports: [TypeOrmModule.forFeature([OrderEntity, ImageEntity, UserEntity, DepositEntity])],
   controllers: [OrdersController],
-  providers: [OrdersService, ImagesService, UsersService]
+  providers: [OrdersService, ImagesService, UsersService, DepositsService]
 })
 export class OrdersModule {}

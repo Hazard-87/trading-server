@@ -22,11 +22,11 @@ export class OrderEntity {
   status: 'OPENED' | 'CLOSED'
 
   @ApiProperty()
-  @Column('decimal', { precision: 6, scale: 2 })
+  @Column('float')
   takeProfit: number
 
   @ApiProperty()
-  @Column('decimal', { precision: 6, scale: 2 })
+  @Column('float')
   stopLoss: number
 
   @ApiProperty()
@@ -34,7 +34,7 @@ export class OrderEntity {
   lot: number
 
   @ApiProperty()
-  @Column('decimal', { precision: 6, scale: 2 })
+  @Column('float')
   openPrice: number
 
   @ApiProperty()
@@ -42,20 +42,24 @@ export class OrderEntity {
   openDate: Date
 
   @ApiProperty()
-  @Column('decimal', { precision: 6, scale: 2 })
+  @Column('float')
   commission: number
 
   @ApiProperty()
-  @Column('decimal', { precision: 6, scale: 2 })
+  @Column('float')
   currentStopLoss: number
 
   @ApiProperty()
-  @Column('decimal', { precision: 6, scale: 2, nullable: true })
+  @Column('float', { nullable: true })
   closePrice: number
 
   @ApiProperty()
   @Column({ nullable: true })
   closeDate: Date
+
+  @ApiProperty()
+  @Column('float')
+  profit: number
 
   @ApiProperty({ type: [ImageEntity] })
   @OneToMany(() => ImageEntity, (image) => image.order)

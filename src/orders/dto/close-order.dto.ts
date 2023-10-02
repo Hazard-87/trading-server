@@ -3,7 +3,7 @@ import { Column } from 'typeorm'
 
 export class CloseOrderDto {
   @ApiProperty()
-  @Column('decimal', { precision: 6, scale: 2 })
+  @Column('float')
   closePrice: number
 
   @ApiProperty()

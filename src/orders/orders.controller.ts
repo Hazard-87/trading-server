@@ -50,8 +50,9 @@ export class OrdersController {
   }
 
   @Patch(':id/close')
-  closeOrder(@Param('id') id: string, @Body() dto: CloseOrderDto) {
-    return this.ordersService.close(+id, dto)
+  async closeOrder(@Req() req, @Param('id') id: string, @Body() dto: CloseOrderDto) {
+    const user = await this.usersService.findOneById(req.user.userId)
+    return this.ordersService.close(+id, dto, user)
   }
 
   @Delete(':id')

@@ -11,11 +11,11 @@ export class CreateOrderDto {
   direction: 'long' | 'short'
 
   @ApiProperty()
-  @Column('decimal', { precision: 6, scale: 2 })
+  @Column('float')
   takeProfit: number
 
   @ApiProperty()
-  @Column('decimal', { precision: 6, scale: 2 })
+  @Column('float')
   stopLoss: number
 
   @ApiProperty()
@@ -23,7 +23,7 @@ export class CreateOrderDto {
   lot: number
 
   @ApiProperty()
-  @Column('decimal', { precision: 6, scale: 2 })
+  @Column('float')
   openPrice: number
 
   @ApiProperty()
@@ -35,7 +35,7 @@ export class CreateOrderDto {
   openDate: Date
 
   @ApiProperty()
-  @Column('decimal', { precision: 6, scale: 2, nullable: true })
+  @Column('float', { nullable: true })
   closePrice: number
 
   @ApiProperty()
@@ -59,4 +59,7 @@ export class QueryArg {
 
   @ApiProperty({ required: false })
   offset: number
+
+  @ApiProperty({ required: false })
+  status: 'OPENED' | 'CLOSED'
 }

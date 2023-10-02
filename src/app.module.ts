@@ -8,6 +8,7 @@ import { OrdersModule } from './orders/orders.module'
 import { UsersModule } from './users/users.module'
 import { ImagesModule } from './images/images.module'
 import { AuthModule } from './auth/auth.module'
+import { DepositsModule } from './deposits/deposits.module'
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { AuthModule } from './auth/auth.module'
     AuthModule,
     OrdersModule,
     UsersModule,
-    ImagesModule
+    ImagesModule,
+    DepositsModule
   ],
   controllers: [AppController],
   providers: [AppService]

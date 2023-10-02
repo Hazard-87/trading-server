@@ -7,24 +7,46 @@ import { UpdateOrderDto } from './dto/update-order.dto'
 import { CreateOrderDto } from './dto/create-order.dto'
 import { CloseOrderDto } from './dto/close-order.dto'
 import { UserEntity } from '../users/entities/user.entity'
+import { DepositsService } from '../deposits/deposits.service'
 
 @Injectable()
 export class OrdersService {
   constructor(
     private imagesService: ImagesService,
+    private depositsService: DepositsService,
     @InjectRepository(OrderEntity)
     private repository: Repository<OrderEntity>
   ) {}
 
+  getProfit(dto: CreateOrderDto): number {
+    if (dto.closePrice) {
+      return dto.direction === 'long'
+        ? (+dto.closePrice - +dto.openPrice) * dto.lot
+        : (+dto.openPrice - +dto.closePrice) * dto.lot
+    } else {
+      return 0
+    }
+  }
+
   async create(dto: CreateOrderDto, user: UserEntity) {
     const images = dto.images ? await this.imagesService.findImagesByIds(dto.images) : []
+    const profit = this.getProfit(dto)
     const result = await this.repository.save({
       ...dto,
       user,
       status: dto.closePrice ? 'CLOSED' : 'OPENED',
       currentStopLoss: dto.stopLoss,
+      profit: profit,
       images
     })
+
+    if (dto.closePrice) {
+      const data = {
+        date: dto.closeDate,
+        count: profit
+      }
+      await this.depositsService.create(data, user)
+    }
     return await this.findOne(result.id)
   }
 
@@ -96,11 +118,22 @@ export class OrdersService {
     return this.findOne(id)
   }
 
-  async close(id: number, dto: CloseOrderDto) {
+  async close(id: number, dto: CloseOrderDto, user: UserEntity) {
     const images = (await this.findOne(id)).images.map((item) => item.id)
     const items = await this.imagesService.findImagesByIds(dto.images || images)
+    const item = await this.findOne(id)
 
-    await this.repository.update(id, { ...dto, status: 'CLOSED', images: items })
+    const profit =
+      item.direction === 'long'
+        ? (+dto.closePrice - +item.openPrice) * item.lot
+        : (+item.openPrice - +dto.closePrice) * item.lot
+    await this.repository.update(id, { ...dto, profit, status: 'CLOSED', images: items })
+
+    const data = {
+      date: dto.closeDate,
+      count: profit
+    }
+    await this.depositsService.create(data, user)
     return this.findOne(id)
   }
 
