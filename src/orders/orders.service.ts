@@ -9,6 +9,13 @@ import { CloseOrderDto } from './dto/close-order.dto'
 import { UserEntity } from '../users/entities/user.entity'
 import { DepositsService } from '../deposits/deposits.service'
 
+interface HistoryItem {
+  entityID: number
+  date: Date
+  profit: number
+  entity: string
+}
+
 @Injectable()
 export class OrdersService {
   constructor(
@@ -40,14 +47,47 @@ export class OrdersService {
       images
     })
 
-    if (dto.closePrice) {
-      const data = {
-        date: dto.closeDate,
-        count: profit
-      }
-      await this.depositsService.create(data, user)
-    }
     return await this.findOne(result.id)
+  }
+
+  async history(userId: number) {
+    const orders = await this.findAll({ limit: 'all', status: 'CLOSED' }, userId)
+    const deposits = await this.depositsService.findAll({ limit: 'all' }, userId)
+
+    const history: HistoryItem[] = [
+      ...orders.result.map((item) => {
+        return {
+          entityID: item.id,
+          date: item.closeDate as Date,
+          profit: item.profit,
+          entity: 'order'
+        }
+      }),
+      ...deposits.result.map((item) => {
+        return {
+          entityID: item.id,
+          date: item.date as Date,
+          profit: item.count,
+          entity: 'deposit'
+        }
+      })
+    ]
+
+    const startSum = 0
+    const result = []
+    const sortedOrders = history.sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    )
+
+    sortedOrders.forEach((item, i) => {
+      const startDeposit = (i ? result[i - 1].deposit : 0) + startSum
+      result.push({
+        ...item,
+        deposit: startDeposit + item.profit
+      })
+    })
+
+    return result
   }
 
   async findOne(id: number) {
@@ -118,7 +158,7 @@ export class OrdersService {
     return this.findOne(id)
   }
 
-  async close(id: number, dto: CloseOrderDto, user: UserEntity) {
+  async close(id: number, dto: CloseOrderDto) {
     const images = (await this.findOne(id)).images.map((item) => item.id)
     const items = await this.imagesService.findImagesByIds(dto.images || images)
     const item = await this.findOne(id)
@@ -128,12 +168,6 @@ export class OrdersService {
         ? (+dto.closePrice - +item.openPrice) * item.lot
         : (+item.openPrice - +dto.closePrice) * item.lot
     await this.repository.update(id, { ...dto, profit, status: 'CLOSED', images: items })
-
-    const data = {
-      date: dto.closeDate,
-      count: profit
-    }
-    await this.depositsService.create(data, user)
     return this.findOne(id)
   }
 

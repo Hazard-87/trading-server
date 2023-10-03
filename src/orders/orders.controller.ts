@@ -31,6 +31,12 @@ export class OrdersController {
     return this.ordersService.create(dto, user)
   }
 
+  @Get('history')
+  async findHistory(@Req() req) {
+    const user = await this.usersService.findOneById(req.user.userId)
+    return this.ordersService.history(user.id)
+  }
+
   @ApiOkResponse({
     type: [OrderEntity]
   })
@@ -50,9 +56,8 @@ export class OrdersController {
   }
 
   @Patch(':id/close')
-  async closeOrder(@Req() req, @Param('id') id: string, @Body() dto: CloseOrderDto) {
-    const user = await this.usersService.findOneById(req.user.userId)
-    return this.ordersService.close(+id, dto, user)
+  async closeOrder(@Param('id') id: string, @Body() dto: CloseOrderDto) {
+    return this.ordersService.close(+id, dto)
   }
 
   @Delete(':id')

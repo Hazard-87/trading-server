@@ -14,11 +14,8 @@ export class DepositsService {
   ) {}
 
   async create(dto: CreateDepositDto, user: UserEntity) {
-    const current = await this.findCurrent(user.id)
-    const currentCount = current?.count || 0
     const result = await this.repository.save({
       ...dto,
-      count: currentCount + dto.count,
       user
     })
     return await this.findOne(result.id)
